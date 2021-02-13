@@ -1,5 +1,6 @@
 package com.jobapply.myapplication.networkpack
 
+import com.jobapply.myapplication.utils.Consts
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -12,8 +13,12 @@ object RetrofitInstance {
         logger.setLevel(HttpLoggingInterceptor.Level.BODY)
 
         val client = OkHttpClient.Builder().addInterceptor(logger).build()
-        Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).client(client)
+
+        Retrofit.Builder().baseUrl(Consts.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create()).client(client)
             .build()
+
+
     }
 
     val api by lazy {
