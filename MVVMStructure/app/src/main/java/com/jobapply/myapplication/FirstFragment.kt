@@ -1,6 +1,7 @@
 package com.jobapply.myapplication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,14 +32,20 @@ class FirstFragment : Fragment() {
         view.findViewById<EditText>(R.id.et_first).addTextChangedListener { editTable ->
             job?.cancel()
             job = MainScope().launch {
-                delay(5000)
+                delay(1000)
                 if (editTable.toString().isNotEmpty()) {
-
+                    Log.e("editField", editTable.toString())
                 }
             }
         }
 
-        mViewModel.breakingNews.observe(viewLifecycleOwner, Observer { resultResponse ->
+        mViewModel.dbBreakingNewsResp.observe(viewLifecycleOwner, Observer { resultResponse ->
+            resultResponse.data?.let {
+                for (i in 0 until it.size) {
+                    Log.e("testing::", "$i =" + it[i].author)
+                }
+            }
+
 //            when(resultResponse) {
 //                is Resource.Success ->
 //
