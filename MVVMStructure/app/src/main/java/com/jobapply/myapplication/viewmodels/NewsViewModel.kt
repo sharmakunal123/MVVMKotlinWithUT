@@ -15,16 +15,18 @@ import retrofit2.Response
 // https://www.youtube.com/watch?v=v2yocpEcE_g&t=401s
 // https://www.youtube.com/watch?v=RkRX446RSPk
 // All from  :- https://www.youtube.com/watch?v=hMpP6N9LGFA&list=PLQkwcJG4YTCRF8XiCRESq1IFFW8COlxYJ&index=11
-@Suppress("UNCHECKED_CAST")
 class NewsViewModel(val repository: NewsRepository) : ViewModel() {
 
     val breakingNews: MutableLiveData<Resource<ArticlesModel>> = MutableLiveData()
     val dbBreakingNewsResp: MutableLiveData<Resource<List<Article>>> = MutableLiveData()
-    //    val searchNews: MutableLiveData<Resource<ArticlesModel>> = MutableLiveData()
+
+    val inputDetail = MutableLiveData<String>()
+    val btnHandling = MutableLiveData<String>()
 
     init {
-//        getBreakingNews("tesla")
+        // getBreakingNews("tesla")
         handleDbBreakingNewsResponse("tesla")
+        btnHandling.value = "Search"
     }
 
     fun getBreakingNews(query: String) = viewModelScope.launch {
@@ -60,7 +62,10 @@ class NewsViewModel(val repository: NewsRepository) : ViewModel() {
         dbBreakingNewsResp.postValue(Resource.Loading())
         val result = repository.getBreakingNews(query)
         val dbResp = parseDbResponse(result)
-        dbBreakingNewsResp.postValue(Resource.Success(dbResp.data!!))
+        dbResp.data?.let {
+            dbBreakingNewsResp.postValue(Resource.Success(dbResp.data))
+        }
+
     }
 
     private fun parseDbResponse(result: Response<ArticlesModel>): Resource<List<Article>> {
@@ -69,6 +74,15 @@ class NewsViewModel(val repository: NewsRepository) : ViewModel() {
             return Resource.Success(serverResp.articles)
         }
         return Resource.Error(result.message())
+    }
+
+
+    /**
+     * Button Click Handling
+     */
+    fun handleClick() {
+        val str = inputDetail.value.toString()
+        handleDbBreakingNewsResponse(str)
     }
 
 }

@@ -5,61 +5,81 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import androidx.core.widget.addTextChangedListener
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.jobapply.myapplication.adapters.MyRecyclerViewAdapter
+import com.jobapply.myapplication.databinding.FragmentFirstBinding
+import com.jobapply.myapplication.model.Article
 import com.jobapply.myapplication.viewmodels.NewsViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class FirstFragment : Fragment() {
 
     lateinit var mViewModel: NewsViewModel
-
+    lateinit var mBinding: FragmentFirstBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         mViewModel = (activity as MainActivity).mViewModel
-        val view = inflater.inflate(R.layout.fragment_first, container, false)
 
-        var job: Job? = null
-        view.findViewById<EditText>(R.id.et_first).addTextChangedListener { editTable ->
-            job?.cancel()
-            job = MainScope().launch {
-                delay(1000)
-                if (editTable.toString().isNotEmpty()) {
-                    Log.e("editField", editTable.toString())
-                }
-            }
-        }
+        mBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_first, container, false
+        )
+        mBinding.myViewmodel = mViewModel
+        mBinding.lifecycleOwner = activity
+        initView()
+        return mBinding.root
+    }
 
+
+    fun initView() {
+        mBinding.rvListDetails.layoutManager = LinearLayoutManager(activity)
+        displayRecycleData()
+
+    }
+
+    /**
+     * Get Data from Api and Display.
+     */
+    private fun displayRecycleData() {
         mViewModel.dbBreakingNewsResp.observe(viewLifecycleOwner, Observer { resultResponse ->
             resultResponse.data?.let {
                 for (i in 0 until it.size) {
                     Log.e("testing::", "$i =" + it[i].author)
                 }
+                mBinding.rvListDetails.adapter =
+                    MyRecyclerViewAdapter(
+                        it,
+                        { selectedItem: Article -> listItemClicked(selectedItem) })
             }
 
-//            when(resultResponse) {
-//                is Resource.Success ->
-//
-//            }
-
         })
-        return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        view.findViewById<Button>(R.id.button_first).setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-        }
+    private fun listItemClicked(selectedItem: Article) {
+        Log.e("listener Clicked", "" + selectedItem.author)
     }
+
+
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//        view.findViewById<Button>(R.id.button_first).setOnClickListener {
+//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+//        }
+//    }
+
+// Todo check how MainScope work.
+//        var job: Job? = null
+//        view.findViewById<EditText>(R.id.et_first).addTextChangedListener { editTable ->
+//            job?.cancel()
+//            job = MainScope().launch {
+//                delay(1000)
+//                if (editTable.toString().isNotEmpty()) {
+//                    Log.e("editField", editTable.toString())
+//                }
+//            }
+//        }
 }
