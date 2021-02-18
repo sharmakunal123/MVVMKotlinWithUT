@@ -40,6 +40,7 @@ class FirstFragment : Fragment() {
 
         // ViewModel
         mViewModel = ViewModelProvider(this, factory).get(NewsViewModel::class.java)
+
         mBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_first, container, false
         )
