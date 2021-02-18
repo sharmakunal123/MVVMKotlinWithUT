@@ -14,8 +14,14 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.incremental":"true"]
+            }
+        }
+
     }
 
     buildTypes {
@@ -29,7 +35,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     buildFeatures {
         dataBinding true
@@ -78,10 +84,18 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation "com.squareup.okhttp3:logging-interceptor:4.7.2"
 
-    implementation 'com.google.dagger:dagger-android:2.23.1'
-    implementation 'com.google.dagger:dagger-android-support:2.23.1'
-    // if you use the support libraries
-    kapt 'com.google.dagger:dagger-android-processor:2.23.1'
-    kapt 'com.google.dagger:dagger-compiler:2.31.2'
+    // Dagger 2
+//    implementation 'com.google.dagger:dagger-android:2.31.2'
+//    implementation 'com.google.dagger:dagger-android-support:2.31.2'
+//    // if you use the support libraries
+//    kapt 'com.google.dagger:dagger-android-processor:2.31.2'
+//    kapt 'com.google.dagger:dagger-compiler:2.31.2'
+
+    def dagger_version = '2.26'
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
 }

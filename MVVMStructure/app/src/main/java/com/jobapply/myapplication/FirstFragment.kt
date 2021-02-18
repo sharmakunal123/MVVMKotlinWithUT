@@ -8,22 +8,38 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jobapply.myapplication.adapters.MyRecyclerViewAdapter
 import com.jobapply.myapplication.databinding.FragmentFirstBinding
+import com.jobapply.myapplication.db.AppDatabase
+import com.jobapply.myapplication.factories.NewsFactoryCls
 import com.jobapply.myapplication.model.Article
+import com.jobapply.myapplication.repositories.NewsRepository
 import com.jobapply.myapplication.viewmodels.NewsViewModel
+import javax.inject.Inject
 
 class FirstFragment : Fragment() {
 
     lateinit var mViewModel: NewsViewModel
     lateinit var mBinding: FragmentFirstBinding
+
+    @Inject
+    lateinit var database: AppDatabase
+
+    @Inject
+    lateinit var repository: NewsRepository
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mViewModel = (activity as MainActivity).mViewModel
 
+        MyApplication.appComponent.inject(this)
+        val factory = NewsFactoryCls(repository)
+
+        // ViewModel
+        mViewModel = ViewModelProvider(this, factory).get(NewsViewModel::class.java)
         mBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_first, container, false
         )
@@ -32,7 +48,6 @@ class FirstFragment : Fragment() {
         initView()
         return mBinding.root
     }
-
 
     fun initView() {
         mBinding.rvListDetails.layoutManager = LinearLayoutManager(activity)
