@@ -26,6 +26,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LearnMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LearnSecondMainActivity"
+            android:screenOrientation="portrait" />
+
+
     </application>
 
 </manifest>

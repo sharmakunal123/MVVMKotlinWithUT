@@ -14,7 +14,10 @@ interface ArticleDao {
     suspend fun getAllArticles(): List<Article>
 
     @Query("SELECT * FROM articles")
-    fun getAllArticlesThroughFlow(): Flow<List<Article>>
+    suspend fun getAllArticlesThroughFlow(): List<Article>
+
+//    @Query("SELECT * FROM articles")
+//    fun getAllArticlesThroughFlow(): Flow<List<Article>>
 
     @Delete
     suspend fun deleteArticle(articlesModel: Article)

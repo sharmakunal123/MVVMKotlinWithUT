@@ -1,6 +1,7 @@
 package com.jobapply.myapplication.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,8 +21,16 @@ class NewsViewModel(val repository: NewsRepository) : ViewModel() {
     val breakingNews: MutableLiveData<Resource<ArticlesModel>> = MutableLiveData()
     val dbBreakingNewsResp: MutableLiveData<Resource<List<Article>>> = MutableLiveData()
 
+    val testingDbGetArticle: MutableLiveData<List<Article>> = MutableLiveData()
+
     val inputDetail = MutableLiveData<String>()
     val btnHandling = MutableLiveData<String>()
+
+    val mutableBreakingNews: MutableLiveData<Resource<ArticlesModel>>
+        get() = breakingNews
+    val mutableDbBreakingNewsResp: MutableLiveData<Resource<List<Article>>>
+        get() = dbBreakingNewsResp
+
 
     init {
         // getBreakingNews("tesla")
@@ -51,10 +60,10 @@ class NewsViewModel(val repository: NewsRepository) : ViewModel() {
 
     fun displayUsingFlow() {
         viewModelScope.launch {
-            repository.getSavedArticles().collect {
-                // Update MutableViewModel
-                Log.e("displayData", "" + it.size)
-            }
+//            repository.getSavedArticles().collect {
+//                // Update MutableViewModel
+//                Log.e("displayData", "" + it.size)
+//            }
         }
     }
 
@@ -83,6 +92,19 @@ class NewsViewModel(val repository: NewsRepository) : ViewModel() {
     fun handleClick() {
         val str = inputDetail.value.toString()
         handleDbBreakingNewsResponse(str)
+    }
+
+    fun getResult(value: Int): Int {
+        return 10 + value
+    }
+
+
+    fun insertArticle(article: Article) = viewModelScope.launch {
+        repository.insertArticle(article)
+    }
+
+    fun getArticle() = viewModelScope.launch {
+        testingDbGetArticle.value = repository.getSavedArticles()
     }
 
 }

@@ -8,22 +8,22 @@ import com.jobapply.myapplication.utils.Consts
 class NewsRepository(val database: AppDatabase) {
 
     suspend fun getBreakingNews(query: String) =
-        RetrofitInstance.api.getArticles(
-            query,
-            "2021-02-01",
-            "publishedAt",
-            Consts.NEW_API_KEY
-        )
+            RetrofitInstance.api.getArticles(
+                    query,
+                    "2021-03-01",
+                    "publishedAt",
+                    Consts.NEW_API_KEY
+            )
 
     suspend fun searchNews(query: String) =
-        RetrofitInstance.api.getArticles(
-            query,
-            "2021-01-13",
-            "publishedAt",
-            Consts.NEW_API_KEY
-        )
+            RetrofitInstance.api.getArticles(
+                    query,
+                    "2021-03-13",
+                    "publishedAt",
+                    Consts.NEW_API_KEY
+            )
 
-    suspend fun upsert(article: Article) = database.getArticleDao().insertArticle(article)
+    suspend fun insertArticle(article: Article) = database.getArticleDao().insertArticle(article)
 
     // Use of Flow
     suspend fun getSavedArticles() = database.getArticleDao().getAllArticlesThroughFlow()

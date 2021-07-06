@@ -16,10 +16,10 @@ class MyApplication : Application() {
         super.onCreate()
 
         appComponent = DaggerAppComponent
-            .builder()
-            .databaseModule(DatabaseModule(this))
-            .appModule(AppModule(this))
-            .build()
+                .builder()
+                .databaseModule(DatabaseModule(this))
+                .appModule(AppModule(this))
+                .build()
 
     }
 }
